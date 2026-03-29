@@ -24,10 +24,7 @@ async function routes(fastify) {
         return { data: { error: 'invalid-author' } }
       }
 
-      let page_ids =
-        page_number % 2 === 0
-          ? [+page_number - 1, +page_number]
-          : [+page_number, +page_number + 1]
+      let page_ids = [+page_number];
 
       // fetch the first verse
       let zero = null

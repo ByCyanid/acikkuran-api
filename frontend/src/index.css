@@ -1,0 +1,123 @@
+@import "tailwindcss";
+
+@import url('https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400;1,700&family=Outfit:wght@100..900&display=swap');
+
+/* High Contrast Theme Variables */
+:root {
+  --primary: #064e3b;
+  --secondary: #b45309;
+  --bg-app: #f3f4f6;
+  --bg-paper: #fdfaf3;
+  --text-main: #111827;
+  --text-muted: #4b5563;
+  --text-arabic: #064e3b;
+  --text-translation: #374151;
+  --border: #e5e7eb;
+  --shadow: rgba(0, 0, 0, 0.1);
+}
+
+.dark {
+  --primary: #34d399;
+  --secondary: #fbbf24;
+  --bg-app: #0a0a0a;
+  --bg-paper: #121212;
+  --text-main: #f9fafb;
+  --text-muted: #9ca3af;
+  --text-arabic: #fde68a; /* Vibrant Gold for Arabic */
+  --text-translation: #e5e7eb; /* Soft White for Translation */
+  --border: #1f2937;
+  --shadow: rgba(0, 0, 0, 0.5);
+}
+
+body {
+  margin: 0;
+  font-family: 'Outfit', sans-serif;
+  background-color: var(--bg-app);
+  color: var(--text-main);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.paper-texture {
+  background-color: var(--bg-paper);
+  background-image: url("https://www.transparenttextures.com/patterns/parchment.png");
+  box-shadow: 0 10px 25px -5px var(--shadow);
+  border: 1px solid var(--border);
+}
+
+.dark .paper-texture {
+  background-image: none; /* Clearer in dark mode */
+}
+
+.arabic-text {
+  font-family: 'Amiri', serif;
+  direction: rtl;
+  color: var(--text-arabic);
+  font-size: calc(var(--text-scale, 1) * 2.8rem) !important;
+}
+
+.translation-text {
+  font-family: 'Outfit', sans-serif;
+  color: var(--text-translation);
+  font-size: calc(var(--text-scale, 1) * 1.5rem) !important;
+}
+
+/* Mushaf Block Layout */
+.mushaf-layout {
+  text-align: justify;
+  text-justify: inter-word;
+  line-height: 2.8;
+}
+
+.mushaf-verse-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M50 5 L95 50 L50 95 L5 50 Z" fill="none" stroke="%23b45309" stroke-width="4"/></svg>');
+  background-repeat: no-repeat;
+  background-position: center;
+  font-size: 0.9rem;
+  font-weight: bold;
+  color: var(--secondary);
+  margin: 0 0.5rem;
+  vertical-align: middle;
+}
+
+.dark .mushaf-verse-mark {
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M50 5 L95 50 L50 95 L5 50 Z" fill="none" stroke="%23fbbf24" stroke-width="4"/></svg>');
+}
+
+/* Full Responsive Enhancements */
+@media (max-width: 640px) {
+  .arabic-text {
+    font-size: calc(var(--text-scale, 1) * 2rem) !important;
+    line-height: 1.8 !important;
+  }
+  .translation-text {
+    font-size: calc(var(--text-scale, 1) * 1.15rem) !important;
+    line-height: 1.6 !important;
+  }
+  .mushaf-layout {
+    line-height: 2 !important;
+  }
+  .mushaf-verse-mark {
+    width: 2rem;
+    height: 2rem;
+    font-size: 0.75rem;
+  }
+  .pt-28 {
+    padding-top: 5.5rem;
+  }
+  .pb-32 {
+    padding-bottom: 5rem;
+  }
+  .p-12 {
+    padding: 1.5rem;
+  }
+}
+
+/* Global Transitions */
+* {
+  transition: border-color 0.3s ease, background-color 0.3s ease, color 0.1s ease;
+}
