@@ -3,6 +3,48 @@ import { useQuran } from '../../context/QuranContext'
 import { Loader2, AlertCircle } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 
+const FootnoteTooltip = ({ verse }) => {
+  const [isOpen, setIsOpen] = React.useState(false);
+  const hasFootnotes = verse.translation?.footnotes && verse.translation.footnotes.length > 0;
+
+  if (!hasFootnotes) {
+    return (
+      <span className="inline-flex items-center justify-center font-bold text-[var(--secondary)] mx-1.5 opacity-80 text-sm">
+        [{verse.verse_number}]
+      </span>
+    );
+  }
+
+  return (
+    <span 
+      className="relative inline-flex items-center justify-center font-bold text-[var(--primary)] mx-1.5 cursor-pointer text-sm underline decoration-dotted underline-offset-4"
+      onMouseEnter={() => setIsOpen(true)}
+      onMouseLeave={() => setIsOpen(false)}
+      onClick={() => setIsOpen(!isOpen)}
+    >
+      [{verse.verse_number}]
+      
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div 
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            className="absolute bottom-[calc(100%+0.5rem)] left-1/2 -translate-x-1/2 w-[280px] sm:w-[320px] p-4 bg-[var(--bg-paper)] shadow-2xl border border-[var(--border)] rounded-xl z-50 text-base text-left !text-[var(--text-translation)] font-normal leading-relaxed before:absolute before:top-full before:left-1/2 before:-translate-x-1/2 before:-mt-[1px] before:border-[8px] before:border-transparent before:border-t-[var(--border)] after:absolute after:top-full after:left-1/2 after:-translate-x-1/2 after:-mt-[2px] after:border-[8px] after:border-transparent after:border-t-[var(--bg-paper)]"
+          >
+            {verse.translation.footnotes.map(fn => (
+              <div key={fn.id} className="mb-3 last:mb-0">
+                <span className="font-bold text-[var(--primary)] mr-1">({fn.number})</span> 
+                {fn.text}
+              </div>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </span>
+  );
+};
+
 const Page = () => {
   const { 
     pageData, loading, error, 
@@ -145,9 +187,7 @@ const Page = () => {
             {pageData?.map((verse) => (
               <React.Fragment key={`tr-${verse.id}`}>
                 {verse.translation?.text}
-                <span className="inline-flex items-center justify-center font-bold text-[var(--secondary)] dark:text-emerald-400 mx-1.5 opacity-80 text-sm">
-                  [{verse.verse_number}]
-                </span>
+                <FootnoteTooltip verse={verse} />
               </React.Fragment>
             ))}
           </div>

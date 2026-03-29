@@ -145,20 +145,20 @@ const SettingsPanel = ({ isOpen, onClose }) => {
 
               {/* Author Selection */}
               <section className="space-y-4">
-                <h3 className="text-sm font-bold text-emerald-700 uppercase tracking-widest">Meal Sahibi / Yazar</h3>
+                <h3 className="text-sm font-bold text-emerald-700 dark:text-emerald-500 uppercase tracking-widest">Meal Sahibi / Yazar</h3>
                 <div className="space-y-2">
                    <select 
                      value={authorId}
                      onChange={(e) => setAuthorId(parseInt(e.target.value))}
-                     className="w-full p-4 rounded-xl border-2 border-gray-100 focus:border-emerald-500 outline-none transition-all font-medium text-emerald-900 appearance-none bg-emerald-50/20"
+                     className="w-full p-4 rounded-xl border-2 border-gray-100 dark:border-gray-800 focus:border-emerald-500 dark:focus:border-emerald-500 outline-none transition-all font-medium text-emerald-900 dark:text-emerald-100 appearance-none bg-emerald-50/20 dark:bg-gray-800 cursor-pointer"
                    >
                      {authors?.map(author => (
-                       <option key={author.id} value={author.id}>
+                       <option key={author.id} value={author.id} className="bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100">
                          {author.name} ({author.language.toUpperCase()})
                        </option>
                      ))}
                    </select>
-                   <p className="text-xs text-emerald-600 px-2">Uygulama genelinde seçilen meali gösterir.</p>
+                   <p className="text-xs text-emerald-600 dark:text-emerald-400 px-2">Uygulama genelinde seçilen meali gösterir.</p>
                 </div>
               </section>
             </div>

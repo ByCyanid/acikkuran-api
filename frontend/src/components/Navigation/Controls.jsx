@@ -91,6 +91,9 @@ const Controls = () => {
         </button>
         
         <div className="flex items-center gap-1 sm:gap-2 bg-[var(--bg-app)] px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg border border-[var(--border)]">
+          <span className="text-sm sm:text-base font-bold text-[var(--text-main)] mr-1 md:mr-2">
+            {isSingleVerse ? "Ayet" : (isRevelationOrder ? "Sure" : "Sayfa")}
+          </span>
           <input 
             type="number"
             value={localValue || ''}

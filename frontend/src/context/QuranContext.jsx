@@ -19,6 +19,61 @@ export const QuranProvider = ({ children }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  const [currentView, setCurrentView] = useState('dashboard'); // 'dashboard' or 'reader'
+  const [lastReadProgress, setLastReadProgress] = useState(null);
+
+  // Load progress on mount
+  useEffect(() => {
+    try {
+      const savedProgress = localStorage.getItem('quran-progress');
+      if (savedProgress) {
+        const parsed = JSON.parse(savedProgress);
+        // 5 months in milliseconds: ~ 5 * 30 * 24 * 60 * 60 * 1000 = 12960000000 ms
+        const FIVE_MONTHS_MS = 12960000000;
+        
+        if (parsed.timestamp && Date.now() - parsed.timestamp > FIVE_MONTHS_MS) {
+          localStorage.removeItem('quran-progress');
+        } else {
+          setLastReadProgress(parsed);
+        }
+      }
+    } catch (e) {
+      console.error('Error parsing progress', e);
+    }
+  }, []);
+
+  // Manual save function instead of auto-save
+  const saveProgress = () => {
+    const progress = {
+      page,
+      verseIndex,
+      isRevelationOrder,
+      isMushafLayout,
+      authorId,
+      timestamp: Date.now()
+    };
+    localStorage.setItem('quran-progress', JSON.stringify(progress));
+    setLastReadProgress(progress);
+  };
+
+  const deleteProgress = () => {
+    localStorage.removeItem('quran-progress');
+    setLastReadProgress(null);
+  };
+
+  const continueReading = () => {
+    if (lastReadProgress) {
+      setPage(lastReadProgress.page || 0);
+      setVerseIndex(lastReadProgress.verseIndex || 0);
+      setIsRevelationOrder(lastReadProgress.isRevelationOrder || false);
+      setIsMushafLayout(lastReadProgress.isMushafLayout || false);
+      if (lastReadProgress.authorId) {
+        setAuthorId(lastReadProgress.authorId);
+      }
+    }
+    setCurrentView('reader');
+  };
+
   const handleSetIsRevelationOrder = (val) => {
     setIsRevelationOrder(val);
     if (val) {
@@ -96,6 +151,7 @@ export const QuranProvider = ({ children }) => {
       setPageData([]);
       
       try {
+        let fetchedData = [];
         if (isRevelationOrder) {
           // In Revelation mode, "page" represents the index (0-113) in the chronological revelation array
           const targetSurahId = revelationOrder[page] || revelationOrder[0];
@@ -119,6 +175,7 @@ export const QuranProvider = ({ children }) => {
               zero: v.verse_number === 1 ? surahObj.zero : null
             }));
             
+            fetchedData = mappedVerses;
             setPageData(mappedVerses);
           } else {
              setPageData([]);
@@ -127,12 +184,13 @@ export const QuranProvider = ({ children }) => {
           // Standard page fetching based on Mushaf bounds
           const data = await fetchPage(page, authorId);
           if (!active) return;
-          setPageData(data || []);
+          fetchedData = data || [];
+          setPageData(fetchedData);
         }
         
         if (targetVerseNumberRef.current !== null) {
           const targetNum = targetVerseNumberRef.current;
-          const vIndex = filteredData.findIndex(v => v.verse_number === targetNum);
+          const vIndex = fetchedData.findIndex(v => v.verse_number === targetNum);
           if (vIndex !== -1) {
             setVerseIndex(vIndex);
           } else {
@@ -140,7 +198,7 @@ export const QuranProvider = ({ children }) => {
           }
           targetVerseNumberRef.current = null;
         } else if (jumpToLastVerseRef.current) {
-          setVerseIndex(Math.max(0, filteredData.length - 1));
+          setVerseIndex(Math.max(0, fetchedData.length - 1));
           jumpToLastVerseRef.current = false;
         } else {
           setVerseIndex(0);
@@ -279,6 +337,12 @@ export const QuranProvider = ({ children }) => {
     jumpToVerse,
     goToPage,
     setVerseIndex,
+    currentView,
+    setCurrentView,
+    lastReadProgress,
+    continueReading,
+    saveProgress,
+    deleteProgress,
   };
 
   return <QuranContext.Provider value={value}>{children}</QuranContext.Provider>;
